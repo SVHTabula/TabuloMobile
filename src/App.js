@@ -1,12 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import logo from './logo.svg';
+
+import { IonApp } from '@ionic/react';
+
 import './App.css';
 import Canvas from './canvas';
 
 class App extends Component {
   render() {
     return (
-      <Fragment>
+      <IonApp>
         <h3 style={{ textAlign: 'center' }}>Dos Paint</h3>
         <div className="main">
           <div className="color-guide">
@@ -16,7 +19,7 @@ class App extends Component {
           </div>
           <Canvas />
         </div>
-      </Fragment>
+      </IonApp>
     );
   }
 }
