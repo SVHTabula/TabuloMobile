@@ -7,7 +7,7 @@ class App extends Component {
   render() {
     return (
       <Fragment>
-        <h3 style={{ textAlign: 'center' }}>Dos Paint</h3>
+        <h3 style={{ textAlign: 'center' }}>Tabula</h3>
         <div className="main">
           <div className="color-guide">
             <h5>Color Guide</h5>

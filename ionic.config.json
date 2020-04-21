@@ -1,5 +1,7 @@
 {
   "name": "Modula Mobile",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "react"
 }

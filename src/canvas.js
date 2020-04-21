@@ -9,6 +9,7 @@ class Canvas extends Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.endPaintEvent = this.endPaintEvent.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
 
     this.pusher = new Pusher('PUSHER_KEY', {
       cluster: 'eu',
@@ -25,6 +26,14 @@ class Canvas extends Component {
     const { offsetX, offsetY } = nativeEvent;
     this.isPainting = true;
     this.prevPos = { offsetX, offsetY };
+  }
+
+  onTouchStart = ({targetTouches}) => {
+    const element = document.querySelector('canvas');
+    const x = element.getBoundingClientRect().x;
+    const y = element.getBoundingClientRect().y;
+    console.log(JSON.stringify(this.canvas.getBoundingClientRect()));
+    console.log(`(${targetTouches[0].clientX-x}, ${targetTouches[0].clientY-y})`);
   }
 
   onMouseMove({ nativeEvent }) {
@@ -77,8 +86,8 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    this.canvas.width = 1000;
-    this.canvas.height = 800;
+    this.canvas.width = 200;
+    this.canvas.height = 200;
     this.ctx = this.canvas.getContext('2d');
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
@@ -98,9 +107,11 @@ class Canvas extends Component {
   render() {
     return (
       <canvas
+        id="drawingCanvas"
         ref={(ref) => (this.canvas = ref)}
         style={{ background: 'black' }}
         onMouseDown={this.onMouseDown}
+        onTouchStart={this.onTouchStart}
         onMouseLeave={this.endPaintEvent}
         onMouseUp={this.endPaintEvent}
         onMouseMove={this.onMouseMove}
