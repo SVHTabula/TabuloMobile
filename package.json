@@ -4,9 +4,7 @@
   "private": true,
   "dependencies": {
     "@ionic/react": "^5.0.7",
-    "body-parser": "^1.18.3",
     "dotenv": "^5.0.1",
-    "express": "^4.16.3",
     "pusher": "^2.0.0",
     "pusher-js": "^4.2.2",
     "react": "^16.3.2",
