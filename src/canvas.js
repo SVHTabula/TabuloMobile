@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { v4 } from 'uuid';
-import Pusher from 'pusher-js';
 import io from 'socket.io-client';
 
 const userStrokeStyle = '#EE92C2';
@@ -11,21 +10,22 @@ const socket = io('http://localhost:4000');
 
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height
-  };
+  return { width, height };
 }
 
 export default function DrawingCanvas() {
   const [isPainting, setIsPainting] = useState(false);
   const [prevPos, setPrevPos] = useState({offsetX: 0, offsetY: 0});
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+  const canvasRef = useRef(null);
   
   useEffect(() => {
-    const canvas = document.querySelector('#drawingCanvas');
-    canvas.width = windowDimensions.width;
-    canvas.height = windowDimensions.height;
+    canvasRef.current.width = windowDimensions.width;
+    canvasRef.current.height = windowDimensions.height;
+  }, [windowDimensions]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
@@ -49,10 +49,10 @@ export default function DrawingCanvas() {
   }, []);
 
   function getOffsets(targetTouches) {
-    const element = document.querySelector('#drawingCanvas');
+    const canvas = canvasRef.current;
     // console.log(util.inspect(element, {showHidden: false, depth: null}))
-    const x = element.offsetLeft;
-    const y = element.offsetTop;
+    const x = canvas.offsetLeft;
+    const y = canvas.offsetTop;
     const offsetX = targetTouches[0].clientX - x;
     const offsetY = targetTouches[0].clientY - y;
     return { offsetX, offsetY };
@@ -67,7 +67,7 @@ export default function DrawingCanvas() {
     const { offsetX, offsetY } = currPos;
     const { offsetX: x, offsetY: y } = prevPos;
 
-    const ctx = document.querySelector('#drawingCanvas').getContext('2d');
+    const ctx = canvasRef.current.getContext('2d');
     ctx.beginPath();
     ctx.strokeStyle = strokeStyle;
     ctx.moveTo(x, y);
@@ -99,6 +99,7 @@ export default function DrawingCanvas() {
 
   return (
     <canvas
+      ref={canvasRef}
       id="drawingCanvas"
       style={{ background: 'black' }}
       onTouchStart={onTouchStart}
