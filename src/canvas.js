@@ -39,7 +39,10 @@ export default function DrawingCanvas() {
     });
     socket.on("newColor", (data) => {
       userStrokeStyleRef.current = data;
-    })
+    });
+    socket.on("newWidth", (data) => {
+      ctx.lineWidth = data;
+    });
 
     function handleResize() {
       setWindowDimensions(getWindowDimensions());
