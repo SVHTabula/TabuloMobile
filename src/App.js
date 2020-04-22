@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { IonApp } from '@ionic/react';
 import SocketContext from "./context/socket";
 import CanvasContext from "./context/canvas";
@@ -19,7 +19,14 @@ export default function App() {
     socket.on("setWidth", (width) => {
       lineWidthRef.current = width;
     });
-  });
+    socket.emit("setPhoneBounds", {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      x: 0,
+      y: 0
+    });
+
+  }, []);
 
   return (
     <IonApp>
