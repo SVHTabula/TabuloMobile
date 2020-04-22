@@ -6,12 +6,15 @@
     "@capacitor/android": "^2.0.1",
     "@capacitor/core": "2.0.1",
     "@capacitor/ios": "^2.0.1",
+    "@ionic-native/core": "^5.24.0",
+    "@ionic-native/gyroscope": "^5.24.0",
     "@ionic/react": "^5.0.7",
+    "cordova-plugin-gyroscope": "^0.1.4",
     "dotenv": "^8.2.0",
-    "pusher": "^3.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
+    "rxjs": "^5.5.0",
     "socket.io-client": "^2.3.0",
     "util": "^0.12.2",
     "uuid": "^7.0.3"
@@ -24,7 +27,8 @@
     "ios": "ionic capacitor run ios -l --external"
   },
   "devDependencies": {
-    "@capacitor/cli": "2.0.1"
+    "@capacitor/cli": "2.0.1",
+    "typescript": "^3.8.3"
   },
   "browserslist": {
     "production": [
