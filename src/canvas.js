@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { v4 } from 'uuid';
-import io from 'socket.io-client';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import CanvasContext from "./context/canvas";
+import SocketContext from "./context/socket";
 
-const socket = io.connect('https://tabula-web.herokuapp.com');
+import { v4 } from 'uuid';
 const userId = v4();
 const line = [];
+
 const canvasRef = React.createRef();
 
 function getWindowDimensions() {
@@ -13,12 +14,14 @@ function getWindowDimensions() {
 }
 
 export default function DrawingCanvas() {
-  const userStrokeStyleRef = useRef("#EE92C2");
   const isPaintingRef = useRef(false);
   const prevPosRef = useRef({ offsetX: 0, offsetY: 0 });
 
+  const { lineWidthRef, lineColorRef } = useContext(CanvasContext);
+  const { socket } = useContext(SocketContext);
+
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-  
+
   useEffect(() => {
     canvasRef.current.width = windowDimensions.width;
     canvasRef.current.height = windowDimensions.height;
@@ -29,19 +32,14 @@ export default function DrawingCanvas() {
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     ctx.lineWidth = 5;
-    socket.on("draw", (data) => {
-      const { userId: id, line } = data;
+
+    socket.on("paint", (data) => {
+      const {userId: id, line} = data;
       if (id !== userId) {
         line.forEach((position) => {
-          paint(position.start, position.stop, userStrokeStyleRef.current);
+          paint(position.start, position.stop);
         });
       }
-    });
-    socket.on("newColor", (data) => {
-      userStrokeStyleRef.current = data;
-    });
-    socket.on("newWidth", (data) => {
-      ctx.lineWidth = data;
     });
 
     function handleResize() {
@@ -66,13 +64,14 @@ export default function DrawingCanvas() {
     isPaintingRef.current = true;
   }
 
-  function paint(prevPos, currPos, strokeStyle) {
+  function paint(prevPos, currPos) {
     const { offsetX, offsetY } = currPos;
     const { offsetX: x, offsetY: y } = prevPos;
 
     const ctx = canvasRef.current.getContext('2d');
+    ctx.strokeStyle = lineColorRef.current;
+    ctx.lineWidth = lineWidthRef.current;
     ctx.beginPath();
-    ctx.strokeStyle = strokeStyle;
     ctx.moveTo(x, y);
     ctx.lineTo(offsetX, offsetY);
     ctx.stroke();
@@ -88,14 +87,13 @@ export default function DrawingCanvas() {
         stop: { ...offSetData },
       };
       line.push(position);
-      paint(prevPosRef.current, offSetData, userStrokeStyleRef.current);
+      paint(prevPosRef.current, offSetData);
     }
   }
 
   function endPaintEvent() {
     if (isPaintingRef.current) {
       isPaintingRef.current = false;
-      console.log({line, userId});
       socket.emit('paint', { line, userId });
       line.splice(0, line.length);
     }
