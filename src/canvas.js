@@ -9,14 +9,23 @@ const userId = v4();
 const line = [];
 const socket = io('http://localhost:4000');
 
+function getWindowDimensions() {
+  const { innerWidth: width, innerHeight: height } = window;
+  return {
+    width,
+    height
+  };
+}
+
 export default function DrawingCanvas() {
   const [isPainting, setIsPainting] = useState(false);
   const [prevPos, setPrevPos] = useState({offsetX: 0, offsetY: 0});
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
   
   useEffect(() => {
     const canvas = document.querySelector('#drawingCanvas');
-    canvas.height = 200;
-    canvas.width = 200;
+    canvas.width = windowDimensions.width;
+    canvas.height = windowDimensions.height;
     const ctx = canvas.getContext('2d');
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
@@ -30,6 +39,13 @@ export default function DrawingCanvas() {
         });
       }
     });
+
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   function getOffsets(targetTouches) {
