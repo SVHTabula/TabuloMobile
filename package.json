@@ -9,10 +9,10 @@
     "@ionic/react": "^5.0.7",
     "dotenv": "^8.2.0",
     "pusher": "^3.0.1",
-    "pusher-js": "^5.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
+    "socket.io-client": "^2.3.0",
     "util": "^0.12.2",
     "uuid": "^7.0.3"
   },

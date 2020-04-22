@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { v4 } from 'uuid';
 import Pusher from 'pusher-js';
-import util from 'util';
+import io from 'socket.io-client';
 
-const pusher = new Pusher('a1de361e8a5975db6810', {
-  cluster: 'us2',
-});
 const userStrokeStyle = '#EE92C2';
 const guestStrokeStyle = '#F0C987';
 const userId = v4();
 const line = [];
+const socket = io('http://localhost:4000');
 
 export default function DrawingCanvas() {
   const [isPainting, setIsPainting] = useState(false);
@@ -17,15 +15,14 @@ export default function DrawingCanvas() {
   
   useEffect(() => {
     const canvas = document.querySelector('#drawingCanvas');
-    canvas.width = 200;
     canvas.height = 200;
+    canvas.width = 200;
     const ctx = canvas.getContext('2d');
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
     ctx.lineWidth = 5;
 
-    const channel = pusher.subscribe('painting');
-    channel.bind('draw', (data) => {
+    socket.on('draw', (data) => {
       const { userId: id, line } = data;
       if (id !== userId) {
         line.forEach((position) => {
@@ -79,26 +76,9 @@ export default function DrawingCanvas() {
   function endPaintEvent() {
     if (isPainting) {
       setIsPainting(false);
-      // sendPaintData();
+      socket.emit('draw', { line, userId });
+      line.splice(0, line.length);
     }
-  }
-
-  async function sendPaintData() {
-    const body = {
-      line,
-      userId
-    };
-
-    const req = await fetch('http://tabula-srv.herokuapp.com/paint', {
-      method: 'post',
-      body: JSON.stringify(body),
-      headers: {
-        'content-type': 'application/json',
-      },
-    });
-    const res = await req.json();
-    console.log(res);
-    line.splice(0, line.length);
   }
 
   return (
