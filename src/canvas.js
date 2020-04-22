@@ -6,8 +6,8 @@ class Canvas extends Component {
   constructor(props) {
     super(props);
 
-    this.pusher = new Pusher('PUSHER_KEY', {
-      cluster: 'eu',
+    this.pusher = new Pusher('a1de361e8a5975db6810', {
+      cluster: 'us2',
     });
   }
   isPainting = false;
@@ -21,7 +21,6 @@ class Canvas extends Component {
     const element = document.querySelector('canvas');
     const x = element.getBoundingClientRect().x;
     const y = element.getBoundingClientRect().y;
-    console.log(JSON.stringify(this.canvas.getBoundingClientRect()));
     const offsetX = targetTouches[0].clientX - x;
     const offsetY = targetTouches[0].clientY - y;
     return { offsetX, offsetY };
@@ -65,13 +64,12 @@ class Canvas extends Component {
   }
 
   async sendPaintData() {
-    /*
     const body = {
       line: this.line,
       userId: this.userId,
     };
 
-    const req = await fetch('http://localhost:4000/paint', {
+    const req = await fetch('http://tabula-srv.herokuapp.com/paint', {
       method: 'post',
       body: JSON.stringify(body),
       headers: {
@@ -79,14 +77,15 @@ class Canvas extends Component {
       },
     });
     const res = await req.json();
+    console.log(res);
     this.line = [];
-    */
   }
 
   componentDidMount() {
-    this.canvas.width = 200;
-    this.canvas.height = 200;
-    this.ctx = this.canvas.getContext('2d');
+    const canvas = document.querySelector('#drawingCanvas');
+    canvas.width = 200;
+    canvas.height = 200;
+    this.ctx = canvas.getContext('2d');
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
     this.ctx.lineWidth = 5;
@@ -106,7 +105,6 @@ class Canvas extends Component {
     return (
       <canvas
         id="drawingCanvas"
-        ref={(ref) => (this.canvas = ref)}
         style={{ background: 'black' }}
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
