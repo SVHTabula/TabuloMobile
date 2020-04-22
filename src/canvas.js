@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { v4 } from 'uuid';
 import io from 'socket.io-client';
 
-const socket = io('https://tabula-web.herokuapp.com');
+const socket = io.connect('https://tabula-web.herokuapp.com');
 const userId = v4();
 const line = [];
 const canvasRef = React.createRef();
@@ -90,7 +90,8 @@ export default function DrawingCanvas() {
   function endPaintEvent() {
     if (isPaintingRef.current) {
       isPaintingRef.current = false;
-      socket.emit('draw', { line, userId });
+      console.log({line, userId});
+      socket.emit('paint', { line, userId });
       line.splice(0, line.length);
     }
   }
