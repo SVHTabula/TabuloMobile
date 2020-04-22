@@ -38,8 +38,8 @@ export default function DrawingCanvas() {
   function getOffsets(targetTouches) {
     const element = document.querySelector('#drawingCanvas');
     // console.log(util.inspect(element, {showHidden: false, depth: null}))
-    const x = element.getBoundingClientRect().x;
-    const y = element.getBoundingClientRect().y;
+    const x = element.offsetLeft;
+    const y = element.offsetTop;
     const offsetX = targetTouches[0].clientX - x;
     const offsetY = targetTouches[0].clientY - y;
     return { offsetX, offsetY };
