@@ -25,7 +25,6 @@ export default function App() {
       x: 0,
       y: 0
     });
-
   }, []);
 
   return (

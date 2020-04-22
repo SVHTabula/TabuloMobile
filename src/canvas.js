@@ -14,6 +14,8 @@ function getWindowDimensions() {
 }
 
 export default function DrawingCanvas() {
+  const isDragModeRef = useRef(false);
+  const isDraggingRef = useRef(false);
   const isPaintingRef = useRef(false);
   const prevPosRef = useRef({ offsetX: 0, offsetY: 0 });
 
@@ -56,6 +58,12 @@ export default function DrawingCanvas() {
       loadImage(imageUrl);
     });
 
+    socket.on("setPhoneBounds", (bounds) => {
+      const {x, y} = bounds;
+      canvasRef.current.marginLeft = x;
+      canvasRef.current.marginTop = y;
+    });
+
     function handleResize() {
       setWindowDimensions(getWindowDimensions());
     }
@@ -75,7 +83,11 @@ export default function DrawingCanvas() {
 
   function onTouchStart({ targetTouches }) {
     prevPosRef.current = getOffsets(targetTouches);
-    isPaintingRef.current = true;
+    if (!isDragModeRef.current) {
+      isPaintingRef.current = true;
+    } else {
+      isDraggingRef.current = true;
+    }
   }
 
   function paint(prevPos, currPos) {
@@ -92,37 +104,55 @@ export default function DrawingCanvas() {
     prevPosRef.current = { offsetX, offsetY };
   }
 
+  function dragTo(currPos) {
+    const { offsetX, offsetY } = currPos;
+
+    socket.emit('setPhoneBounds', {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      x: offsetX,
+      y: offsetY
+    });
+
+    prevPosRef.current = { offsetX, offsetY };
+  }
+
   function onTouchMove({ targetTouches }) {
-    if (isPaintingRef.current) {
-      const { offsetX, offsetY } = getOffsets(targetTouches);
-      const offSetData = { offsetX, offsetY };
+    if (isPaintingRef.current || isDraggingRef.current) {
+      const {offsetX, offsetY} = getOffsets(targetTouches);
+      const offSetData = {offsetX, offsetY};
       const position = {
-        start: { ...prevPosRef.current },
-        stop: { ...offSetData },
+        start: {...prevPosRef.current},
+        stop: {...offSetData},
       };
       line.push(position);
-      paint(prevPosRef.current, offSetData);
+      if (isPaintingRef.current) {
+        paint(prevPosRef.current, offSetData);
+      } else if (isDraggingRef.current) {
+        dragTo(offSetData);
+      }
     }
   }
 
-  function endPaintEvent() {
+  function onTouchEnd() {
     if (isPaintingRef.current) {
       isPaintingRef.current = false;
-      socket.emit('paint', { line, userId });
+      socket.emit('paint', {line, userId});
       line.splice(0, line.length);
+    } else if (isDraggingRef.current) {
+      isDraggingRef.current = false;
     }
   }
 
   return (
     <div>
-      <button id="orientationButton"></button>
       <canvas
         ref={canvasRef}
         id="drawingCanvas"
         style={{ background: 'black' }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
-        onTouchEnd={endPaintEvent}
+        onTouchEnd={onTouchEnd}
       />
     </div>
   );
