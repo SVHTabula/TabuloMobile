@@ -6,11 +6,6 @@ class Canvas extends Component {
   constructor(props) {
     super(props);
 
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.endPaintEvent = this.endPaintEvent.bind(this);
-    this.onTouchStart = this.onTouchStart.bind(this);
-
     this.pusher = new Pusher('PUSHER_KEY', {
       cluster: 'eu',
     });
@@ -22,23 +17,24 @@ class Canvas extends Component {
   userId = v4();
   prevPos = { offsetX: 0, offsetY: 0 };
 
-  onMouseDown({ nativeEvent }) {
-    const { offsetX, offsetY } = nativeEvent;
-    this.isPainting = true;
-    this.prevPos = { offsetX, offsetY };
-  }
-
-  onTouchStart = ({targetTouches}) => {
+  _getOffsets(targetTouches) {
     const element = document.querySelector('canvas');
     const x = element.getBoundingClientRect().x;
     const y = element.getBoundingClientRect().y;
     console.log(JSON.stringify(this.canvas.getBoundingClientRect()));
-    console.log(`(${targetTouches[0].clientX-x}, ${targetTouches[0].clientY-y})`);
+    const offsetX = targetTouches[0].clientX - x;
+    const offsetY = targetTouches[0].clientY - y;
+    return { offsetX, offsetY };
   }
 
-  onMouseMove({ nativeEvent }) {
+  onTouchStart = ({ targetTouches }) => {
+    this.prevPos = this._getOffsets(targetTouches);
+    this.isPainting = true;
+  }
+
+  onTouchMove = ({ targetTouches }) => {
     if (this.isPainting) {
-      const { offsetX, offsetY } = nativeEvent;
+      const { offsetX, offsetY } = this._getOffsets(targetTouches);
       const offSetData = { offsetX, offsetY };
       this.position = {
         start: { ...this.prevPos },
@@ -49,14 +45,14 @@ class Canvas extends Component {
     }
   }
 
-  endPaintEvent() {
+  endPaintEvent = () => {
     if (this.isPainting) {
       this.isPainting = false;
       this.sendPaintData();
     }
   }
 
-  paint(prevPos, currPos, strokeStyle) {
+  paint = (prevPos, currPos, strokeStyle) => {
     const { offsetX, offsetY } = currPos;
     const { offsetX: x, offsetY: y } = prevPos;
 
@@ -69,6 +65,7 @@ class Canvas extends Component {
   }
 
   async sendPaintData() {
+    /*
     const body = {
       line: this.line,
       userId: this.userId,
@@ -83,6 +80,7 @@ class Canvas extends Component {
     });
     const res = await req.json();
     this.line = [];
+    */
   }
 
   componentDidMount() {
@@ -110,11 +108,9 @@ class Canvas extends Component {
         id="drawingCanvas"
         ref={(ref) => (this.canvas = ref)}
         style={{ background: 'black' }}
-        onMouseDown={this.onMouseDown}
         onTouchStart={this.onTouchStart}
-        onMouseLeave={this.endPaintEvent}
-        onMouseUp={this.endPaintEvent}
-        onMouseMove={this.onMouseMove}
+        onTouchMove={this.onTouchMove}
+        onTouchEnd={this.endPaintEvent}
       />
     );
   }

@@ -5,6 +5,7 @@
   "dependencies": {
     "@capacitor/android": "^2.0.1",
     "@capacitor/core": "2.0.1",
+    "@capacitor/ios": "^2.0.1",
     "@ionic/react": "^5.0.7",
     "dotenv": "^8.2.0",
     "pusher": "^3.0.1",
@@ -18,7 +19,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "ios": "ionic capacitor run ios -l --external"
   },
   "devDependencies": {
     "@capacitor/cli": "2.0.1"
