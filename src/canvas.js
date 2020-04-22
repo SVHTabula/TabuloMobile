@@ -22,6 +22,16 @@ export default function DrawingCanvas() {
 
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
+  function loadImage(url) {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.src = url;
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0);
+    };
+  }
+
   useEffect(() => {
     canvasRef.current.width = windowDimensions.width;
     canvasRef.current.height = windowDimensions.height;
@@ -40,6 +50,10 @@ export default function DrawingCanvas() {
           paint(position.start, position.stop);
         });
       }
+    });
+
+    socket.on("updateImage", (imageUrl) => {
+      loadImage(imageUrl);
     });
 
     function handleResize() {
