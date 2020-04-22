@@ -7,7 +7,7 @@
   "cordova": {},
   "windowsAndroidStudioPath": "C:\\Users\\abstractdev\\AppData\\Local\\JetBrains\\Toolbox\\apps\\AndroidStudio\\ch-0\\192.6241897\\bin\\studio64.exe",
   "server": {
-    "url": "http://192.168.45.115:8100",
+    "url": "http://localhost:8100",
     "cleartext": true
   }
 }
