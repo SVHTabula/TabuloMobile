@@ -13,6 +13,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
+    "util": "^0.12.2",
     "uuid": "^7.0.3"
   },
   "scripts": {

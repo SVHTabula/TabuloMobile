@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { v4 } from 'uuid';
 import Pusher from 'pusher-js';
+import util from 'util';
 
 class Canvas extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class Canvas extends Component {
 
   _getOffsets(targetTouches) {
     const element = document.querySelector('canvas');
+    console.log(util.inspect(element, {showHidden: false, depth: null}))
     const x = element.getBoundingClientRect().x;
     const y = element.getBoundingClientRect().y;
     const offsetX = targetTouches[0].clientX - x;
@@ -47,7 +49,7 @@ class Canvas extends Component {
   endPaintEvent = () => {
     if (this.isPainting) {
       this.isPainting = false;
-      this.sendPaintData();
+      //this.sendPaintData();
     }
   }
 
