@@ -114,13 +114,17 @@ export default function DrawingCanvas() {
   }
 
   return (
-    <canvas
-      ref={canvasRef}
-      id="drawingCanvas"
-      style={{ background: 'black' }}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={endPaintEvent}
-    />
+    <div>
+      <button id="orientationButton"></button>
+      <canvas
+        ref={canvasRef}
+        id="drawingCanvas"
+        style={{ background: 'black' }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={endPaintEvent}
+      />
+    </div>
   );
+
 }

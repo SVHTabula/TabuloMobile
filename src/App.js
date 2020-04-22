@@ -1,5 +1,5 @@
-import React, { useEffect, useContext, useRef } from "react";
-import { IonApp } from "@ionic/react";
+import React, { useEffect, useRef } from 'react';
+import { IonApp } from '@ionic/react';
 import SocketContext from "./context/socket";
 import CanvasContext from "./context/canvas";
 import io from "socket.io-client";
@@ -39,7 +39,14 @@ export default function App() {
       lineWidthRef.current = width;
     });
     window.addEventListener("deviceorientation", handleOrientation, true);
-  });
+    socket.emit("setPhoneBounds", {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      x: 0,
+      y: 0
+    });
+
+  }, []);
 
   return (
     <IonApp>
