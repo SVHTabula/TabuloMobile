@@ -13,7 +13,6 @@ function getWindowDimensions() {
 }
 
 export default function DrawingCanvas() {
-  const guestStrokeStyleRef = useRef("#F0C987");
   const userStrokeStyleRef = useRef("#EE92C2");
   const isPaintingRef = useRef(false);
   const prevPosRef = useRef({ offsetX: 0, offsetY: 0 });
@@ -34,10 +33,13 @@ export default function DrawingCanvas() {
       const { userId: id, line } = data;
       if (id !== userId) {
         line.forEach((position) => {
-          paint(position.start, position.stop, guestStrokeStyleRef.current);
+          paint(position.start, position.stop, userStrokeStyleRef.current);
         });
       }
     });
+    socket.on("newColor", (data) => {
+      userStrokeStyleRef.current = data;
+    })
 
     function handleResize() {
       setWindowDimensions(getWindowDimensions());
