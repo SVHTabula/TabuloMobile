@@ -8,7 +8,7 @@ import PhoneContext from "../context/phone";
 export default function TheCurrentScreen({ roomIdRef }) {
   const [roomId, setRoomId] = useState('');
   const { socket } = useContext(SocketContext);
-  const { phoneBounds } = useContext(PhoneContext);
+  const { phoneBoundsRef } = useContext(PhoneContext);
 
   useEffect(() => {
     socket.on("leaveRoom", () => {
@@ -19,7 +19,7 @@ export default function TheCurrentScreen({ roomIdRef }) {
   useEffect(() => {
     if (!roomId) return;
     roomIdRef.current = roomId;
-    socket.emit("setPhoneBounds", phoneBounds);
+    socket.emit("setPhoneBounds", phoneBoundsRef.current);
   });
 
   return (

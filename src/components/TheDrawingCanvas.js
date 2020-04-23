@@ -28,6 +28,10 @@ export default function DrawingCanvas() {
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
   useEffect(() => {
+    socket.emit("setPhoneBounds", phoneBoundsRef.current);
+  });
+
+  useEffect(() => {
     window.addEventListener('touchstart', ({targetTouches}) => {
       if (isDragModeRef.current) {
         isDraggingRef.current = true;
