@@ -12,22 +12,49 @@ export default function App() {
   const lineWidthRef = useRef(5);
   const lineColorRef = useRef("#ffffff");
 
+  let x = 0, y = 0;
+
+  function moveScreen(direction) {
+    switch(direction) {
+      case "UP":
+        y-=1;
+        break;
+      case "DOWN":
+        y+=1;
+        break;
+      case "LEFT":
+        x-=1;
+        break;
+      case "RIGHT":
+        x+=1;
+        break;
+      default:
+        console.log("error");
+    }
+    socket.emit("setPhoneBounds", {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      x: x,
+      y: y
+    });
+  }
+
   function handleOrientation(event) {
     var absolute = event.absolute;
     var alpha = event.alpha;
     var beta = event.beta;
     var gamma = event.gamma;
     if (beta < 170 && beta > 0) {
-      console.log("UP");
+      moveScreen("UP");
     }
     if (beta > -170 && beta < 0) {
-      console.log("DOWN");
+      moveScreen("DOWN");
     }
     if (gamma < -30) {
-      console.log('LEFT');
+      moveScreen('LEFT');
     }
     if (gamma > 30) {
-      console.log('RIGHT')
+      moveScreen('RIGHT')
     }
   }
 
@@ -42,8 +69,8 @@ export default function App() {
     socket.emit("setPhoneBounds", {
       width: window.innerWidth,
       height: window.innerHeight,
-      x: 0,
-      y: 0
+      x: x,
+      y: y
     });
   }, []);
 
