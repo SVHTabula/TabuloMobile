@@ -5,11 +5,13 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import Button from "@material-ui/core/Button";
 import Paper from '@material-ui/core/Paper';
 import SocketContext from "../context/socket";
+import RoomContext from "../context/room";
 
-export default function TheConnectToRoomDialog({ setJoinedRoom }) {
+export default function TheRoomConnectScreen() {
   const { socket } = useContext(SocketContext);
+  const { setRoomId } = useContext(RoomContext);
 
-  const [roomId, setRoomId] = useState('');
+  const [formRoomId, setFormRoomId] = useState('');
   const [roomPassword, setRoomPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -24,15 +26,15 @@ export default function TheConnectToRoomDialog({ setJoinedRoom }) {
         label="Room ID"
         variant="outlined"
         style={{marginLeft: 10, marginRight: 10, marginBottom: 0, marginTop: 5}}
-        value={roomId}
-        onChange={({value}) => setRoomId(value)}
+        value={formRoomId}
+        onChange={(e) => setFormRoomId(e.target.value)}
       />
       <TextField
         label="Admin Password"
         variant="outlined"
         style={{marginLeft: 10, marginRight: 10, marginBottom: 0, marginTop: 5}}
         value={roomPassword}
-        onChange={({value}) => setRoomPassword(value)}
+        onChange={(e) => setRoomPassword(e.target.value)}
       />
       <Button
         variant="contained"
@@ -40,11 +42,13 @@ export default function TheConnectToRoomDialog({ setJoinedRoom }) {
         color="primary"
         onClick={() => {
           socket.emit("connectToRoom", {
-            id: roomId, password: roomPassword
+            id: formRoomId, password: roomPassword
           }, (response) => {
+            console.log(response);
             if (!response.success) {
               setErrorMessage(response.message);
             }
+            setRoomId(formRoomId);
           });
         }}
       >Connect</Button>

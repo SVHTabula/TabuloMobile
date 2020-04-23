@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useIonViewDidEnter } from '@ionic/react';
+import React, { useEffect, useRef } from 'react';
 import { IonApp } from '@ionic/react';
 import SocketContext from "./context/socket";
 import CanvasContext from "./context/canvas";
 import PhoneContext from "./context/phone";
 import io from "socket.io-client";
 import "./App.css";
-import TheDrawingCanvas from "./components/TheDrawingCanvas";
-import TheConnectToRoomDialog from "./components/TheConnectToRoomDialog";
+import TheCurrentScreen, { roomIdRef } from "./components/TheCurrentScreen";
 
 const socket = io("https://tabula-web.herokuapp.com");
 
@@ -21,18 +19,19 @@ export default function App() {
     y: 0
   });
 
-  const [joinedRoom, setJoinedRoom] = useState(false);
-
   useEffect(() => {
-    if (!joinedRoom) return;
     socket.on("setColor", (color) => {
       lineColorRef.current = color;
     });
     socket.on("setWidth", (width) => {
       lineWidthRef.current = width;
     });
+    socket.on("leaveRoom", (width) => {
+
+    });
 
     function handleOrientation(event) {
+      if (!roomIdRef.current) return;
       function moveScreen(direction) {
         switch (direction) {
           case "UP":
@@ -62,22 +61,15 @@ export default function App() {
     }
 
     window.addEventListener("deviceorientation", handleOrientation, true);
-    socket.emit("setPhoneBounds", phoneBoundsRef.current);
   });
 
   return (
     <IonApp>
       <div className="main">
-        <CanvasContext.Provider value={{
-          lineWidthRef,
-          lineColorRef
-        }}>
+        <CanvasContext.Provider value={{ lineWidthRef, lineColorRef }}>
           <SocketContext.Provider value={{ socket }}>
             <PhoneContext.Provider value={{ phoneBoundsRef }}>
-              {joinedRoom ?
-                <TheDrawingCanvas /> :
-                <TheConnectToRoomDialog setJoinedRoom={setJoinedRoom} />
-              }
+              <TheCurrentScreen />
             </PhoneContext.Provider>
           </SocketContext.Provider>
         </CanvasContext.Provider>
