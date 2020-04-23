@@ -64,7 +64,7 @@ export default function DrawingCanvas() {
       }
     });
 
-  }, []);
+  });
 
   function setPhoneBounds(bounds) {
     phoneBoundsRef.current = bounds;
@@ -109,9 +109,16 @@ export default function DrawingCanvas() {
 
     socket.on("setPhoneBounds", setPhoneBounds);
     socket.on("setCanvasBounds", (bounds) => {
-      console.log(bounds);
-      canvasRef.current.getContext('2d').canvas.width = bounds.width;
-      canvasRef.current.getContext('2d').canvas.height = bounds.height;
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      const imageData = canvas.toDataURL();
+      ctx.canvas.width = bounds.width;
+      ctx.canvas.height = bounds.height;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.strokeStyle = lineColorRef.current;
+      ctx.lineWidth = lineWidthRef.current;
+      loadImage(imageData);
     });
 
     function handleResize() {
@@ -120,7 +127,7 @@ export default function DrawingCanvas() {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  });
 
   function getOffsets(targetTouches) {
     const canvas = canvasRef.current;
@@ -139,6 +146,7 @@ export default function DrawingCanvas() {
   }
 
   function paint(prevPos, currPos) {
+    console.log(prevPos, currPos);
     const { offsetX, offsetY } = currPos;
     const { offsetX: x, offsetY: y } = prevPos;
 

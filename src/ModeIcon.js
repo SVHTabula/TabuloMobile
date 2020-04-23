@@ -7,7 +7,7 @@ export default function ModeIcon({ isDragModeRef }) {
 
   useEffect(() => {
     isDragModeRef.current = isDragMode;
-  }, [isDragMode]);
+  });
 
   if (isDragMode) {
     return <CreateIcon

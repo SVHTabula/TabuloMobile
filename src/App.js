@@ -39,14 +39,7 @@ export default function App() {
     socket.emit("setPhoneBounds", phoneBoundsRef.current);
   }
 
-  function handleOrientation(event) {
-    const beta = event.beta;
-    const gamma = event.gamma;
-    if (beta < 170 && beta > 0) moveScreen("LEFT");
-    if (beta > -170 && beta < 0) moveScreen("RIGHT");
-    if (gamma < -30) moveScreen('DOWN');
-    if (gamma > 30) moveScreen('UP')
-  }
+
 
   useEffect(() => {
     socket.on("setColor", (color) => {
@@ -55,6 +48,14 @@ export default function App() {
     socket.on("setWidth", (width) => {
       lineWidthRef.current = width;
     });
+    function handleOrientation(event) {
+      const beta = event.beta;
+      const gamma = event.gamma;
+      if (beta < 170 && beta > 0) moveScreen("LEFT");
+      if (beta > -170 && beta < 0) moveScreen("RIGHT");
+      if (gamma < -30) moveScreen('DOWN');
+      if (gamma > 30) moveScreen('UP')
+    }
     window.addEventListener("deviceorientation", handleOrientation, true);
     socket.emit("setPhoneBounds", phoneBoundsRef.current);
     console.log(phoneBoundsRef.current);
