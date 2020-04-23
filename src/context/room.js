@@ -1,9 +1,7 @@
 import React from 'react';
 
-const CanvasContext = React.createContext({
-  lineColorRef: null,
-  lineWidthRef: null,
-  canvasBounds: {}
+const RoomContext = React.createContext({
+  roomId: null
 });
 
-export default CanvasContext;
+export default RoomContext;

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useIonViewDidEnter } from '@ionic/react';
 import { IonApp } from '@ionic/react';
-import { Keyboard } from '@ionic-native/keyboard';
 import SocketContext from "./context/socket";
 import CanvasContext from "./context/canvas";
 import PhoneContext from "./context/phone";
@@ -23,10 +22,6 @@ export default function App() {
   });
 
   const [joinedRoom, setJoinedRoom] = useState(false);
-
-  useIonViewDidEnter(() => {
-    Keyboard.disableScroll(true);
-  });
 
   useEffect(() => {
     if (!joinedRoom) return;

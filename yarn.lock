@@ -1102,13 +1102,6 @@
   dependencies:
     "@types/cordova" latest
 
-"@ionic-native/keyboard@^5.24.0":
-  version "5.24.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/keyboard/-/keyboard-5.24.0.tgz#e75f55c5f927271556bebc1e6c5c70a69a8e1494"
-  integrity sha512-1vgKrHmd2/l6WLKiN6TWveIOw5MIhP3k1Qg8sR2pR6FZyAsEY2OFgeZwj+L71gbUOasv4Arbv7wlU9ax29sk8Q==
-  dependencies:
-    "@types/cordova" latest
-
 "@ionic/core@5.0.7":
   version "5.0.7"
   resolved "https://registry.yarnpkg.com/@ionic/core/-/core-5.0.7.tgz#fbb8877991204a721ebfdd56600e6e3931efda7e"
@@ -3208,11 +3201,6 @@ copy-descriptor@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
-
-cordova-plugin-ionic-keyboard@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-ionic-keyboard/-/cordova-plugin-ionic-keyboard-2.2.0.tgz#53ba9ccd5e765165446a094cfe042a2ddd87d81d"
-  integrity sha512-yDUG+9ieKVRitq5mGlNxjaZh/MgEhFFIgTIPhqSbUaQ8UuZbawy5mhJAVClqY97q8/rcQtL6dCDa7x2sEtCLcA==
 
 core-js-compat@^3.6.2:
   version "3.6.5"
