@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import CanvasContext from "./context/canvas";
 import SocketContext from "./context/socket";
-import ControlCameraIcon from '@material-ui/icons/ControlCamera'
+import PhoneContext from './context/phone';
+import ModeIcon from './ModeIcon';
 
 import { v4 } from 'uuid';
 const userId = v4();
@@ -20,10 +21,19 @@ export default function DrawingCanvas() {
   const isPaintingRef = useRef(false);
   const prevPosRef = useRef({ offsetX: 0, offsetY: 0 });
 
+  const { phoneBoundsRef } = useContext(PhoneContext);
   const { lineWidthRef, lineColorRef } = useContext(CanvasContext);
   const { socket } = useContext(SocketContext);
 
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+  function setPhoneBounds(bounds) {
+    console.log(bounds);
+    phoneBoundsRef.current = bounds;
+    const {x, y} = bounds;
+    canvasRef.current.marginLeft = x;
+    canvasRef.current.marginTop = y;
+  }
 
   function loadImage(url) {
     const canvas = canvasRef.current;
@@ -59,11 +69,7 @@ export default function DrawingCanvas() {
       loadImage(imageUrl);
     });
 
-    socket.on("setPhoneBounds", (bounds) => {
-      const {x, y} = bounds;
-      canvasRef.current.marginLeft = x;
-      canvasRef.current.marginTop = y;
-    });
+    socket.on("setPhoneBounds", setPhoneBounds);
 
     function handleResize() {
       setWindowDimensions(getWindowDimensions());
@@ -105,17 +111,22 @@ export default function DrawingCanvas() {
     prevPosRef.current = { offsetX, offsetY };
   }
 
-  function dragTo(currPos) {
-    const { offsetX, offsetY } = currPos;
+  function drag(prevPos, curPos) {
+    const { prevX, prevY } = prevPos;
+    const { curX, curY } = curPos;
+    const { boundX, boundY } = phoneBoundsRef.current;
 
-    socket.emit('setPhoneBounds', {
+    const bounds = {
       width: window.innerWidth,
       height: window.innerHeight,
-      x: offsetX,
-      y: offsetY
-    });
+      x: boundX + curX - prevX,
+      y: boundY + curY - prevY
+    };
 
-    prevPosRef.current = { offsetX, offsetY };
+    setPhoneBounds(bounds);
+    socket.emit('setPhoneBounds', bounds);
+
+    prevPosRef.current = { offsetX: curX, offsetY: curY };
   }
 
   function onTouchMove({ targetTouches }) {
@@ -130,7 +141,7 @@ export default function DrawingCanvas() {
       if (isPaintingRef.current) {
         paint(prevPosRef.current, offSetData);
       } else if (isDraggingRef.current) {
-        dragTo(offSetData);
+        drag(prevPosRef.current, offSetData);
       }
     }
   }
@@ -155,10 +166,7 @@ export default function DrawingCanvas() {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       />
-      <ControlCameraIcon
-        style={{color: 'white', position: 'absolute', top: 0, right: 0}}
-        onClick={() => console.log('hi')}
-      />
+      <ModeIcon isDragModeRef={isDragModeRef} />
     </div>
   );
 
