@@ -1,6 +1,11 @@
 body {
   font-family: 'Roboto Condensed', serif;
 }
+
+html, body {
+  overflow: hidden;
+}
+
 .main {
   display: flex;
   justify-content: center;

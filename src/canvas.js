@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import CanvasContext from "./context/canvas";
 import SocketContext from "./context/socket";
+import ControlCameraIcon from '@material-ui/icons/ControlCamera'
 
 import { v4 } from 'uuid';
 const userId = v4();
@@ -145,14 +146,20 @@ export default function DrawingCanvas() {
   }
 
   return (
-    <canvas
-      ref={canvasRef}
-      id="drawingCanvas"
-      style={{ background: 'black' }}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-    />
+    <div style={{height: '100%', width: '100%'}}>
+      <canvas
+        ref={canvasRef}
+        id="drawingCanvas"
+        style={{ background: 'black' }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      />
+      <ControlCameraIcon
+        style={{color: 'white', position: 'absolute', top: 0, right: 0}}
+        onClick={() => console.log('hi')}
+      />
+    </div>
   );
 
 }
