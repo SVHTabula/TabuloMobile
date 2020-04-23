@@ -42,10 +42,10 @@ export default function App() {
   function handleOrientation(event) {
     const beta = event.beta;
     const gamma = event.gamma;
-    if (beta < 170 && beta > 0) moveScreen("UP");
-    if (beta > -170 && beta < 0) moveScreen("DOWN");
-    if (gamma < -30) moveScreen('LEFT');
-    if (gamma > 30) moveScreen('RIGHT')
+    if (beta < 170 && beta > 0) moveScreen("LEFT");
+    if (beta > -170 && beta < 0) moveScreen("RIGHT");
+    if (gamma < -30) moveScreen('DOWN');
+    if (gamma > 30) moveScreen('UP')
   }
 
   useEffect(() => {
