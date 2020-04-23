@@ -83,10 +83,10 @@ export default function DrawingCanvas() {
 
   function onTouchStart({ targetTouches }) {
     prevPosRef.current = getOffsets(targetTouches);
-    if (!isDragModeRef.current) {
-      isPaintingRef.current = true;
-    } else {
+    if (isDragModeRef.current) {
       isDraggingRef.current = true;
+    } else {
+      isPaintingRef.current = true;
     }
   }
 
@@ -145,16 +145,14 @@ export default function DrawingCanvas() {
   }
 
   return (
-    <div>
-      <canvas
-        ref={canvasRef}
-        id="drawingCanvas"
-        style={{ background: 'black' }}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-      />
-    </div>
+    <canvas
+      ref={canvasRef}
+      id="drawingCanvas"
+      style={{ background: 'black' }}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    />
   );
 
 }
