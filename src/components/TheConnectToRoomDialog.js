@@ -37,7 +37,13 @@ export default function TheConnectToRoomDialog({ setJoinedRoom }) {
         style={{margin: 10}}
         color="primary"
         onClick={() => {
-          socket.emit("connectToRoom", roomId, roomPassword);
+          socket.emit("connectToRoom", {
+            id: roomId, password: roomPassword
+          }, (response) => {
+            if (!response.success) {
+
+            }
+          });
         }}
       >Connect</Button>
     </Dialog>
