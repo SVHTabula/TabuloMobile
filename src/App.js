@@ -12,21 +12,22 @@ export default function App() {
   const lineWidthRef = useRef(5);
   const lineColorRef = useRef("#ffffff");
 
-  let x = 0, y = 0;
+  const x = useRef(0);
+  const y = useRef(0);
 
   function moveScreen(direction) {
     switch(direction) {
       case "UP":
-        y-=1;
+        y.current-=1;
         break;
       case "DOWN":
-        y+=1;
+        y.current+=1;
         break;
       case "LEFT":
-        x-=1;
+        x.current-=1;
         break;
       case "RIGHT":
-        x+=1;
+        x.current+=1;
         break;
       default:
         console.log("error");
