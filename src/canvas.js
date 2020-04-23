@@ -112,6 +112,10 @@ export default function DrawingCanvas() {
       console.log(bounds);
       canvasRef.current.getContext('2d').canvas.width = bounds.width;
       canvasRef.current.getContext('2d').canvas.height = bounds.height;
+      const ctx = canvasRef.current.getContext("2d");
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.lineWidth = 5;
     });
 
     function handleResize() {
