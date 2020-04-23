@@ -109,8 +109,9 @@ export default function DrawingCanvas() {
 
     socket.on("setPhoneBounds", setPhoneBounds);
     socket.on("setCanvasBounds", (bounds) => {
-      canvasRef.current.style.width = bounds.width;
-      canvasRef.current.style.height = bounds.height;
+      console.log(bounds);
+      canvasRef.current.getContext('2d').canvas.width = bounds.width;
+      canvasRef.current.getContext('2d').canvas.height = bounds.height;
     });
 
     function handleResize() {
