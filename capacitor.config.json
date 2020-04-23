@@ -10,9 +10,5 @@
     "Keyboard": {
       "resize": "none"
     }
-  },
-  "server": {
-    "url": "http://192.168.45.116:8100",
-    "cleartext": true
   }
 }
