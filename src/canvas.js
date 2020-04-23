@@ -31,8 +31,8 @@ export default function DrawingCanvas() {
     console.log(bounds);
     phoneBoundsRef.current = bounds;
     const {x, y} = bounds;
-    canvasRef.current.marginLeft = x;
-    canvasRef.current.marginTop = y;
+    canvasRef.current.style.marginLeft = x;
+    canvasRef.current.style.marginTop = y;
   }
 
   function loadImage(url) {
@@ -112,9 +112,9 @@ export default function DrawingCanvas() {
   }
 
   function drag(prevPos, curPos) {
-    const { prevX, prevY } = prevPos;
-    const { curX, curY } = curPos;
-    const { boundX, boundY } = phoneBoundsRef.current;
+    const { offsetX: prevX, offsetY: prevY } = prevPos;
+    const { offsetX: curX, offsetY: curY } = curPos;
+    const { x: boundX, y: boundY } = phoneBoundsRef.current;
 
     const bounds = {
       width: window.innerWidth,
@@ -157,11 +157,16 @@ export default function DrawingCanvas() {
   }
 
   return (
-    <div style={{height: '100%', width: '100%'}}>
+    <div style={{height: '100%', width: '100%', position: 'absolute', top: 0, right: 0, left: 0, bottom: 0}}>
       <canvas
         ref={canvasRef}
         id="drawingCanvas"
-        style={{ background: 'black' }}
+        style={{
+          background: 'black',
+          position: 'absolute',
+          top: 0,
+          left: 0
+        }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
