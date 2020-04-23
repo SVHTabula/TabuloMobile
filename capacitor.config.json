@@ -8,8 +8,6 @@
   "windowsAndroidStudioPath": "C:\\Users\\abstractdev\\AppData\\Local\\JetBrains\\Toolbox\\apps\\AndroidStudio\\ch-0\\192.6241897\\bin\\studio64.exe",
   "server": {
     "url": "http://192.168.1.141:8100",
-    "cleartext": true,
-    "originalUrl": "http://192.168.55.18:8100",
-    "originalCleartext": true
+    "cleartext": true
   }
 }
