@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import CanvasContext from "./context/canvas";
-import SocketContext from "./context/socket";
-import PhoneContext from './context/phone';
-import ModeIcon from './ModeIcon';
+import CanvasContext from "../context/canvas";
+import SocketContext from "../context/socket";
+import PhoneContext from '../context/phone';
+import TheDrawingCanvasModeIcon from './TheDrawingCanvasModeIcon';
 
 import { v4 } from 'uuid';
 const userId = v4();
@@ -209,7 +209,7 @@ export default function DrawingCanvas() {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       />
-      <ModeIcon isDragModeRef={isDragModeRef} />
+      <TheDrawingCanvasModeIcon isDragModeRef={isDragModeRef} />
     </div>
   );
 

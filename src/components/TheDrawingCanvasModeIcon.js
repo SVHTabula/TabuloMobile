@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import ControlCameraIcon from "@material-ui/icons/ControlCamera";
 import CreateIcon from '@material-ui/icons/Create';
 
-export default function ModeIcon({ isDragModeRef }) {
+export default function TheDrawingCanvasModeIcon({ isDragModeRef }) {
   const [isDragMode, setIsDragMode] = useState(isDragModeRef.current);
 
   useEffect(() => {
