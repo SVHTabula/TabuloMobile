@@ -1,8 +1,9 @@
 import React, { useState, useContext } from "react";
-import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from "@material-ui/core/TextField";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import Button from "@material-ui/core/Button";
+import Paper from '@material-ui/core/Paper';
 import SocketContext from "../context/socket";
 
 export default function TheConnectToRoomDialog({ setJoinedRoom }) {
@@ -10,9 +11,10 @@ export default function TheConnectToRoomDialog({ setJoinedRoom }) {
 
   const [roomId, setRoomId] = useState('');
   const [roomPassword, setRoomPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   return (
-    <Dialog open={true}>
+    <Paper variant="outlined" style={{display: 'flex', flexDirection: 'column', marginTop: 30}}>
       <DialogTitle style={{margin: 0, paddingBottom: 5, paddingTop: 10}}>
         <span style={{fontWeight: 'bold'}}>
           Connect to Tabula Room
@@ -23,29 +25,32 @@ export default function TheConnectToRoomDialog({ setJoinedRoom }) {
         variant="outlined"
         style={{marginLeft: 10, marginRight: 10, marginBottom: 0, marginTop: 5}}
         value={roomId}
-        onChange={setRoomId}
+        onChange={({value}) => setRoomId(value)}
       />
       <TextField
         label="Admin Password"
         variant="outlined"
         style={{marginLeft: 10, marginRight: 10, marginBottom: 0, marginTop: 5}}
         value={roomPassword}
-        onChange={setRoomPassword}
+        onChange={({value}) => setRoomPassword(value)}
       />
       <Button
         variant="contained"
-        style={{margin: 10}}
+        style={{margin: 10, marginBottom: 5}}
         color="primary"
         onClick={() => {
           socket.emit("connectToRoom", {
             id: roomId, password: roomPassword
           }, (response) => {
             if (!response.success) {
-
+              setErrorMessage(response.message);
             }
           });
         }}
       >Connect</Button>
-    </Dialog>
+      <FormHelperText error={true} style={{textAlign: 'center', marginBottom: 5}}>
+        {errorMessage}
+      </FormHelperText>
+    </Paper>
   );
 }
