@@ -31,8 +31,10 @@ export default function DrawingCanvas() {
     console.log(bounds);
     phoneBoundsRef.current = bounds;
     const {x, y} = bounds;
-    canvasRef.current.style.marginLeft = x;
-    canvasRef.current.style.marginTop = y;
+    console.log('hi');
+    canvasRef.current.style.left = x;
+    canvasRef.current.style.top = y;
+    console.log('bye');
   }
 
   function loadImage(url) {
@@ -164,8 +166,8 @@ export default function DrawingCanvas() {
         style={{
           background: 'black',
           position: 'absolute',
-          top: 0,
-          left: 0
+          top: 10,
+          left: 10
         }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
