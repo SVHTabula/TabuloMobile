@@ -25,7 +25,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "ios": "ionic capacitor run ios -l --external",
-    "android":  "ionic capacitor run android -l --external"
+    "android": "ionic capacitor run android -l --external"
   },
   "devDependencies": {
     "@capacitor/cli": "2.0.1",

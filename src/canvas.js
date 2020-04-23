@@ -27,14 +27,50 @@ export default function DrawingCanvas() {
 
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
+  useEffect(() => {
+    window.addEventListener('touchstart', ({targetTouches}) => {
+      if (isDragModeRef.current) {
+        isDraggingRef.current = true;
+        const offsetX = targetTouches[0].clientX;
+        const offsetY = targetTouches[0].clientY;
+        prevPosRef.current = { offsetX, offsetY };
+      }
+    });
+
+    window.addEventListener('touchmove', ({targetTouches}) => {
+      if (isDraggingRef.current) {
+        const curX = targetTouches[0].clientX;
+        const curY = targetTouches[0].clientY;
+        const { offsetX: prevX, offsetY: prevY } = prevPosRef.current;
+        const { x: boundX, y: boundY } = phoneBoundsRef.current;
+
+        const bounds = {
+          width: window.innerWidth,
+          height: window.innerHeight,
+          x: Math.max(0, boundX - (curX - prevX)),
+          y: Math.max(0, boundY - (curY - prevY))
+        };
+
+        setPhoneBounds(bounds);
+        socket.emit('setPhoneBounds', bounds);
+
+        prevPosRef.current = { offsetX: curX, offsetY: curY }
+      }
+    });
+
+    window.addEventListener('touchend', () => {
+      if (isDraggingRef.current) {
+        isDraggingRef.current = false;
+      }
+    });
+
+  }, []);
+
   function setPhoneBounds(bounds) {
-    console.log(bounds);
     phoneBoundsRef.current = bounds;
     const {x, y} = bounds;
-    console.log('hi');
-    canvasRef.current.style.left = x;
-    canvasRef.current.style.top = y;
-    console.log('bye');
+    canvasRef.current.style.left = `-${x}px`;
+    canvasRef.current.style.top = `-${y}px`;
   }
 
   function loadImage(url) {
@@ -72,6 +108,10 @@ export default function DrawingCanvas() {
     });
 
     socket.on("setPhoneBounds", setPhoneBounds);
+    socket.on("setCanvasBounds", (bounds) => {
+      canvasRef.current.style.width = bounds.width;
+      canvasRef.current.style.height = bounds.height;
+    });
 
     function handleResize() {
       setWindowDimensions(getWindowDimensions());
@@ -92,9 +132,7 @@ export default function DrawingCanvas() {
 
   function onTouchStart({ targetTouches }) {
     prevPosRef.current = getOffsets(targetTouches);
-    if (isDragModeRef.current) {
-      isDraggingRef.current = true;
-    } else {
+    if (!isDragModeRef.current) {
       isPaintingRef.current = true;
     }
   }
@@ -113,26 +151,8 @@ export default function DrawingCanvas() {
     prevPosRef.current = { offsetX, offsetY };
   }
 
-  function drag(prevPos, curPos) {
-    const { offsetX: prevX, offsetY: prevY } = prevPos;
-    const { offsetX: curX, offsetY: curY } = curPos;
-    const { x: boundX, y: boundY } = phoneBoundsRef.current;
-
-    const bounds = {
-      width: window.innerWidth,
-      height: window.innerHeight,
-      x: boundX + curX - prevX,
-      y: boundY + curY - prevY
-    };
-
-    setPhoneBounds(bounds);
-    socket.emit('setPhoneBounds', bounds);
-
-    prevPosRef.current = { offsetX: curX, offsetY: curY };
-  }
-
   function onTouchMove({ targetTouches }) {
-    if (isPaintingRef.current || isDraggingRef.current) {
+    if (isPaintingRef.current) {
       const {offsetX, offsetY} = getOffsets(targetTouches);
       const offSetData = {offsetX, offsetY};
       const position = {
@@ -140,21 +160,22 @@ export default function DrawingCanvas() {
         stop: {...offSetData},
       };
       line.push(position);
-      if (isPaintingRef.current) {
-        paint(prevPosRef.current, offSetData);
-      } else if (isDraggingRef.current) {
-        drag(prevPosRef.current, offSetData);
-      }
+      paint(prevPosRef.current, offSetData);
     }
   }
 
   function onTouchEnd() {
     if (isPaintingRef.current) {
       isPaintingRef.current = false;
+      const { x: boundX, y: boundY } = phoneBoundsRef.current;
+      for (let l of line) {
+        l.start.x += boundX;
+        l.start.y += boundY;
+        l.stop.x += boundX;
+        l.stop.y += boundY;
+      }
       socket.emit('paint', {line, userId});
       line.splice(0, line.length);
-    } else if (isDraggingRef.current) {
-      isDraggingRef.current = false;
     }
   }
 
@@ -166,8 +187,8 @@ export default function DrawingCanvas() {
         style={{
           background: 'black',
           position: 'absolute',
-          top: 10,
-          left: 10
+          top: 0,
+          left: 0
         }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}

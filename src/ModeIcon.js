@@ -11,12 +11,12 @@ export default function ModeIcon({ isDragModeRef }) {
 
   if (isDragMode) {
     return <CreateIcon
-      style={{color: 'white', position: 'absolute', top: 2, right: 2}}
+      style={{color: 'orange', position: 'absolute', top: 2, right: 2}}
       onClick={() => setIsDragMode(false)}
     />;
   } else {
     return <ControlCameraIcon
-      style={{color: 'white', position: 'absolute', top: 2, right: 2}}
+      style={{color: 'orange', position: 'absolute', top: 2, right: 2}}
       onClick={() => setIsDragMode(true)}
     />
   }
