@@ -5,7 +5,7 @@ import CanvasContext from "./context/canvas";
 import PhoneContext from "./context/phone";
 import io from "socket.io-client";
 import "./App.css";
-import TheCurrentScreen, { roomIdRef } from "./components/TheCurrentScreen";
+import TheCurrentScreen from "./components/TheCurrentScreen";
 
 const socket = io("https://tabula-web.herokuapp.com");
 
@@ -18,6 +18,7 @@ export default function App() {
     x: 0,
     y: 0
   });
+  const roomIdRef = useRef(null);
 
   useEffect(() => {
     socket.on("setColor", (color) => {
@@ -25,9 +26,6 @@ export default function App() {
     });
     socket.on("setWidth", (width) => {
       lineWidthRef.current = width;
-    });
-    socket.on("leaveRoom", (width) => {
-
     });
 
     function handleOrientation(event) {
@@ -69,7 +67,7 @@ export default function App() {
         <CanvasContext.Provider value={{ lineWidthRef, lineColorRef }}>
           <SocketContext.Provider value={{ socket }}>
             <PhoneContext.Provider value={{ phoneBoundsRef }}>
-              <TheCurrentScreen />
+              <TheCurrentScreen roomIdRef={roomIdRef} />
             </PhoneContext.Provider>
           </SocketContext.Provider>
         </CanvasContext.Provider>

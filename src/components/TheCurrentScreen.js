@@ -3,19 +3,23 @@ import RoomContext from "../context/room";
 import TheDrawingCanvas from "./TheDrawingCanvas";
 import TheRoomConnectScreen from "./TheRoomConnectScreen";
 import SocketContext from "../context/socket";
-import CanvasContext from "../context/canvas";
+import PhoneContext from "../context/phone";
 
-export const roomIdRef = React.createRef();
-
-export default function TheCurrentScreen() {
-  const [roomId, setRoomId] = useState(false);
+export default function TheCurrentScreen({ roomIdRef }) {
+  const [roomId, setRoomId] = useState('');
   const { socket } = useContext(SocketContext);
-  const { phoneBoundsRef } = useContext(CanvasContext);
+  const { phoneBounds } = useContext(PhoneContext);
+
+  useEffect(() => {
+    socket.on("leaveRoom", () => {
+      setRoomId('');
+    });
+  }, [socket]);
 
   useEffect(() => {
     if (!roomId) return;
     roomIdRef.current = roomId;
-    socket.emit("setPhoneBounds", phoneBoundsRef.current);
+    socket.emit("setPhoneBounds", phoneBounds);
   });
 
   return (
