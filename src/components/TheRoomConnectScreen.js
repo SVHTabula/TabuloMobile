@@ -24,6 +24,7 @@ export default function TheRoomConnectScreen() {
       </DialogTitle>
       <TextField
         label="Room ID"
+        type="email"
         variant="outlined"
         style={{marginLeft: 10, marginRight: 10, marginBottom: 0, marginTop: 5}}
         value={formRoomId}
@@ -31,6 +32,7 @@ export default function TheRoomConnectScreen() {
       />
       <TextField
         label="Admin Password"
+        type="password"
         variant="outlined"
         style={{marginLeft: 10, marginRight: 10, marginBottom: 0, marginTop: 5}}
         value={roomPassword}
