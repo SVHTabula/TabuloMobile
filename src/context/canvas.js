@@ -3,7 +3,7 @@ import React from 'react';
 const CanvasContext = React.createContext({
   lineColorRef: null,
   lineWidthRef: null,
-  canvasBounds: {}
+  canvasBoundsRef: null
 });
 
 export default CanvasContext;

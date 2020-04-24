@@ -12,7 +12,7 @@ const socket = io("https://tabula-web.herokuapp.com");
 
 export default function App() {
   const lineWidthRef = useRef(5);
-  const lineColorRef = useRef("#ffffff");
+  const lineColorRef = useRef("#000000");
   const phoneBoundsRef = useRef({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -88,7 +88,7 @@ export default function App() {
   return (
     <IonApp>
       <div className="main">
-        <CanvasContext.Provider value={{ lineWidthRef, lineColorRef }}>
+        <CanvasContext.Provider value={{ lineWidthRef, lineColorRef, canvasBoundsRef }}>
           <SocketContext.Provider value={{ socket }}>
             <PhoneContext.Provider value={{ phoneBoundsRef }}>
               <TheCurrentScreen roomIdRef={roomIdRef} />

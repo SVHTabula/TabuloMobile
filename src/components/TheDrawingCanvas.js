@@ -22,7 +22,7 @@ export default function DrawingCanvas() {
   const prevPosRef = useRef({ offsetX: 0, offsetY: 0 });
 
   const { phoneBoundsRef } = useContext(PhoneContext);
-  const { lineWidthRef, lineColorRef, canvasBounds } = useContext(CanvasContext);
+  const { lineWidthRef, lineColorRef, canvasBoundsRef } = useContext(CanvasContext);
   const { socket } = useContext(SocketContext);
 
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
@@ -48,12 +48,17 @@ export default function DrawingCanvas() {
         const { offsetX: prevX, offsetY: prevY } = prevPosRef.current;
         const { x: boundX, y: boundY } = phoneBoundsRef.current;
 
+        let newX = Math.max(0, boundX - (curX - prevX));
+        let newY = Math.max(0, boundY - (curY - prevY));
+        newX = Math.min(canvasBoundsRef.current.width - phoneBoundsRef.current.width, newX);
+        newY = Math.min(canvasBoundsRef.current.height - phoneBoundsRef.current.height, newY);
         const bounds = {
           width: window.innerWidth,
           height: window.innerHeight,
-          x: Math.max(0, boundX - (curX - prevX)),
-          y: Math.max(0, boundY - (curY - prevY))
+          x: newX,
+          y: newY
         };
+        console.log(bounds);
 
         setPhoneBounds(bounds);
         socket.emit('setPhoneBounds', bounds);
@@ -113,6 +118,8 @@ export default function DrawingCanvas() {
 
     socket.on("setPhoneBounds", setPhoneBounds);
     function setCanvasBounds(bounds) {
+      canvasBoundsRef.current.width = bounds.width;
+      canvasBoundsRef.current.height = bounds.height;
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       const imageData = canvas.toDataURL();
@@ -124,8 +131,9 @@ export default function DrawingCanvas() {
       ctx.lineWidth = lineWidthRef.current;
       loadImage(imageData);
     }
+
     socket.on("setCanvasBounds", setCanvasBounds);
-    setCanvasBounds(canvasBounds);
+    setCanvasBounds(canvasBoundsRef.current);
 
     socket.on("clearCanvas", () => {
       const canvas = canvasRef.current;
@@ -206,7 +214,7 @@ export default function DrawingCanvas() {
         ref={canvasRef}
         id="drawingCanvas"
         style={{
-          background: 'black',
+          background: 'white',
           position: 'absolute',
           top: 0,
           left: 0
