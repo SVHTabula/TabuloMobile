@@ -38,6 +38,10 @@ export default function DrawingCanvas() {
         const offsetX = targetTouches[0].clientX;
         const offsetY = targetTouches[0].clientY;
         prevPosRef.current = { offsetX, offsetY };
+        line.push({
+          start: { ...prevPosRef.current },
+          stop: { ...prevPosRef.current }
+        });
       }
     });
 
