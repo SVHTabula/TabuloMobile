@@ -63,7 +63,7 @@ export default function App() {
 
   return (
     <IonApp>
-      <div className="main">
+      <ion-content>
         <CanvasContext.Provider value={{ lineWidthRef, lineColorRef }}>
           <SocketContext.Provider value={{ socket }}>
             <PhoneContext.Provider value={{ phoneBoundsRef }}>
@@ -71,7 +71,7 @@ export default function App() {
             </PhoneContext.Provider>
           </SocketContext.Provider>
         </CanvasContext.Provider>
-      </div>
+      </ion-content>
     </IonApp>
   );
 }
