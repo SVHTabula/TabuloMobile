@@ -6,6 +6,7 @@ import PhoneContext from "./context/phone";
 import io from "socket.io-client";
 import "./App.css";
 import TheCurrentScreen from "./components/TheCurrentScreen";
+import {canvasRef} from "./components/TheDrawingCanvas"
 
 const socket = io("https://tabula-web.herokuapp.com");
 
@@ -20,6 +21,45 @@ export default function App() {
   });
   const roomIdRef = useRef(null);
 
+  function setPhoneBounds(bounds) {
+    phoneBoundsRef.current = bounds;
+    const {x, y} = bounds;
+    canvasRef.current.style.left = `-${x}px`;
+    canvasRef.current.style.top = `-${y}px`;
+  }
+
+  function moveScreen(direction) {
+    switch (direction) {
+      case "UP":
+        phoneBoundsRef.current.y -= 1;
+        break;
+      case "DOWN":
+        phoneBoundsRef.current.y += 1;
+        break;
+      case "LEFT":
+        phoneBoundsRef.current.x -= 1;
+        break;
+      case "RIGHT":
+        phoneBoundsRef.current.x += 1;
+        break;
+      default:
+        console.log("error");
+    }
+  }
+
+  function handleOrientation(event) {
+    if (!roomIdRef.current) return;
+
+    socket.emit("setPhoneBounds", phoneBoundsRef.current);
+    setPhoneBounds(phoneBoundsRef.current);
+    const beta = event.beta;
+    const gamma = event.gamma;
+    if (beta < 170 && beta > 0) moveScreen("LEFT");
+    if (beta > -170 && beta < 0) moveScreen("RIGHT");
+    if (gamma < -30) moveScreen('DOWN');
+    if (gamma > 30) moveScreen('UP')
+  }
+
   useEffect(() => {
     socket.on("setColor", (color) => {
       lineColorRef.current = color;
@@ -27,36 +67,6 @@ export default function App() {
     socket.on("setWidth", (width) => {
       lineWidthRef.current = width;
     });
-
-    function handleOrientation(event) {
-      if (!roomIdRef.current) return;
-      function moveScreen(direction) {
-        switch (direction) {
-          case "UP":
-            phoneBoundsRef.current.y -= 1;
-            break;
-          case "DOWN":
-            phoneBoundsRef.current.y += 1;
-            break;
-          case "LEFT":
-            phoneBoundsRef.current.x -= 1;
-            break;
-          case "RIGHT":
-            phoneBoundsRef.current.x += 1;
-            break;
-          default:
-            console.log("error");
-        }
-      }
-
-      socket.emit("setPhoneBounds", phoneBoundsRef.current);
-      const beta = event.beta;
-      const gamma = event.gamma;
-      if (beta < 170 && beta > 0) moveScreen("LEFT");
-      if (beta > -170 && beta < 0) moveScreen("RIGHT");
-      if (gamma < -30) moveScreen('DOWN');
-      if (gamma > 30) moveScreen('UP')
-    }
 
     window.addEventListener("deviceorientation", handleOrientation, true);
   });

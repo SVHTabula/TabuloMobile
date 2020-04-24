@@ -8,7 +8,7 @@ import { v4 } from 'uuid';
 const userId = v4();
 const line = [];
 
-const canvasRef = React.createRef();
+export const canvasRef = React.createRef();
 
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
