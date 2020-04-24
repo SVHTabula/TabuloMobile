@@ -22,7 +22,7 @@ export default function DrawingCanvas() {
   const prevPosRef = useRef({ offsetX: 0, offsetY: 0 });
 
   const { phoneBoundsRef } = useContext(PhoneContext);
-  const { lineWidthRef, lineColorRef } = useContext(CanvasContext);
+  const { lineWidthRef, lineColorRef, canvasBounds } = useContext(CanvasContext);
   const { socket } = useContext(SocketContext);
 
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
@@ -112,7 +112,7 @@ export default function DrawingCanvas() {
     });
 
     socket.on("setPhoneBounds", setPhoneBounds);
-    socket.on("setCanvasBounds", (bounds) => {
+    function setCanvasBounds(bounds) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       const imageData = canvas.toDataURL();
@@ -123,13 +123,15 @@ export default function DrawingCanvas() {
       ctx.strokeStyle = lineColorRef.current;
       ctx.lineWidth = lineWidthRef.current;
       loadImage(imageData);
-    });
+    }
+    socket.on("setCanvasBounds", setCanvasBounds);
+    setCanvasBounds(canvasBounds);
 
     socket.on("clearCanvas", () => {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-    })
+    });
 
     function handleResize() {
       setWindowDimensions(getWindowDimensions());

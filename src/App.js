@@ -19,6 +19,11 @@ export default function App() {
     x: 0,
     y: 0
   });
+  const canvasBoundsRef = useRef({
+    width: 100,
+    height: 100
+  });
+
   const roomIdRef = useRef(null);
 
   function setPhoneBounds(bounds) {
@@ -66,6 +71,15 @@ export default function App() {
     });
     socket.on("setWidth", (width) => {
       lineWidthRef.current = width;
+    });
+    socket.on("setIsBlackboardMode", (isBlackboardMode) => {
+      const ctx = canvasRef.current.getContext("2d");
+      ctx.fillStyle = isBlackboardMode ? 'black' : 'white';
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    });
+    socket.on("setCanvasBounds", (bounds) => {
+      canvasBoundsRef.current.width = bounds.width;
+      canvasBoundsRef.current.height = bounds.height;
     });
 
     window.addEventListener("deviceorientation", handleOrientation, true);
