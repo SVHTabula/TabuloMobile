@@ -6,10 +6,3 @@ body, html {
   overflow: hidden;
 }
 
-.main {
-  overflow: hidden;
-}
-
-ion-content {
-  --overflow: hidden;
-}
