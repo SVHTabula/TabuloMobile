@@ -9,6 +9,6 @@ Hackathon Project For Silicon Valley Hacks 2020
 
 ## Built With
 
-* [Ionic React](https://ionicframework.com/docs/react) 
-* [socket.io](https://socket.io/)
-* [Express](https://expressjs.com/)
+* [Python](https://www.python.org/) 
+* [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+* [Heroku](https://heroku.com)
